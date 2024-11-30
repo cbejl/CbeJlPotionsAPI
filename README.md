@@ -10,7 +10,7 @@ Create you own potion effect!
 #### Step 1.
 
 Add an API dependency to your plugin.
-Download [release](https://github.com/cbejl/CbeJlPotionAPI/releases) and add local dependency
+Download [release](https://github.com/cbejl/CbeJlPotionsAPI/releases) and add local dependency
 ```xml
 <dependency>
     <groupId>cbejl.plugins</groupId>
