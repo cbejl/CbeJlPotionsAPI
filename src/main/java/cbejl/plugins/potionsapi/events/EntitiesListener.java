@@ -3,7 +3,6 @@ package cbejl.plugins.potionsapi.events;
 import cbejl.plugins.potionsapi.abstraction.CustomEffectType;
 import cbejl.plugins.potionsapi.service.CustomEffect;
 import cbejl.plugins.potionsapi.service.CustomEffectManager;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -14,6 +13,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -32,34 +32,19 @@ public class EntitiesListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onProjectileHit(ProjectileHitEvent event) {
+    public void onPotionHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof ThrownPotion thrownPotion)) {
             return;
         }
-        CustomEffect customEffect = getCustomPotionEffect(thrownPotion.getItem());
-        if (customEffect == null) {
+        projectileProcessing(thrownPotion.getItem(), thrownPotion, event);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTippedArrowHit(ProjectileHitEvent event) {
+        if (!(event.getEntity() instanceof Arrow arrow)) {
             return;
         }
-        CustomEffectType customPotionEffectType = customEffect.getType();
-        customEffect.setShooter(thrownPotion.getShooter());
-        //handle potion hit block effect
-        Block block = event.getHitBlock();
-        if (block != null) {
-            if (thrownPotion.getItem().getType() == Material.SPLASH_POTION) {
-                customPotionEffectType.splashPotionHitBlockEffect(block, customEffect.getProperties());
-            } else if (thrownPotion.getItem().getType() == Material.LINGERING_POTION) {
-                customPotionEffectType.lingeringPotionHitBlockEffect(block, customEffect.getProperties());
-            }
-        }
-        //handle potion hit entity effect
-        Entity entity = event.getHitEntity();
-        if (entity != null) {
-            if (thrownPotion.getItem().getType() == Material.SPLASH_POTION) {
-                customPotionEffectType.splashPotionHitEntityEffect(entity, customEffect.getProperties());
-            } else if (thrownPotion.getItem().getType() == Material.LINGERING_POTION) {
-                customPotionEffectType.lingeringPotionHitEntityEffect(entity, customEffect.getProperties());
-            }
-        }
+        projectileProcessing(arrow.getItemStack(), arrow, event);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -75,6 +60,36 @@ public class EntitiesListener implements Listener {
                         setAreaEffectCloudProperties(potionEffect, areaEffectCloud);
                         getAreaEffectClouds().put(areaEffectCloud, potionEffect);
                     }
+                }
+            }
+        }
+    }
+
+    private static void projectileProcessing(ItemStack itemStack, Projectile projectile, ProjectileHitEvent event) {
+        CustomEffect customEffect = getCustomPotionEffect(itemStack);
+        if (customEffect == null) {
+            return;
+        }
+        CustomEffectType customPotionEffectType = customEffect.getType();
+        customEffect.setShooter(projectile.getShooter());
+        //handle potion hit block effect
+        Block block = event.getHitBlock();
+        if (block != null) {
+            switch (itemStack.getType()) {
+                case SPLASH_POTION -> customPotionEffectType.splashPotionHitBlockEffect(block, customEffect.getProperties());
+                case LINGERING_POTION -> customPotionEffectType.lingeringPotionHitBlockEffect(block, customEffect.getProperties());
+                case TIPPED_ARROW -> customPotionEffectType.tippedArrowHitBlockEffect(block, customEffect.getProperties());
+            }
+        }
+        //handle potion hit entity effect
+        Entity entity = event.getHitEntity();
+        if (entity != null) {
+            switch (itemStack.getType()) {
+                case SPLASH_POTION -> customPotionEffectType.splashPotionHitEntityEffect(entity, customEffect.getProperties());
+                case LINGERING_POTION -> customPotionEffectType.lingeringPotionHitEntityEffect(entity, customEffect.getProperties());
+                case TIPPED_ARROW -> {
+                    customPotionEffectType.tippedArrowHitEntityEffect(entity, customEffect.getProperties());
+                    if(entity instanceof LivingEntity livingEntity) customEffect.apply(livingEntity);
                 }
             }
         }

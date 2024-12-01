@@ -1,5 +1,5 @@
 name: CbeJlPotionsAPI
-version: '1.0'
+version: '1.1'
 main: cbejl.plugins.potionsapi.CbeJlPotionsAPI
 api-version: '1.21'
 prefix: CbeJl Potions API
@@ -7,4 +7,4 @@ authors:
   - CbeJl_Tpycbl
   - Sheepion
 description: Create your own potion effect! The plugin is based on the CustomPotionAPI by Sheepion (https://github.com/Sheepion/CustomPotionAPI)
-website: https://github.com/cbejl/CbeJlPotionAPI
+website: https://github.com/cbejl/CbeJlPotionsAPI

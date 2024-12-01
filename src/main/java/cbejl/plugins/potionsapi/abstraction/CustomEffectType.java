@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.CraftingRecipe;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -126,6 +127,8 @@ public interface CustomEffectType {
     default void lingeringPotionHitBlockEffect(Block block, CustomEffectProperties properties) {
     }
 
+    default void tippedArrowHitBlockEffect(Block block, CustomEffectProperties properties){}
+
     /**
      * the potion effect when splash potion hit entity
      * this method will be called automatically when the splash potion hit the entity.
@@ -145,6 +148,8 @@ public interface CustomEffectType {
      */
     default void lingeringPotionHitEntityEffect(Entity entity, CustomEffectProperties properties) {
     }
+
+    default void tippedArrowHitEntityEffect(Entity entity, CustomEffectProperties properties){}
 
     /**
      * get all the potion mix recipes that need to register.<br>
@@ -191,7 +196,7 @@ public interface CustomEffectType {
     ArrayList<Component> splashPotionLore(CustomEffectProperties properties);
 
     /**
-     * get the lore of the splash potion item
+     * get the display name of the splash potion item
      * used when create the potion item by CustomPotionManager#getSplashPotion(...)
      *
      * @param properties the properties of the potion effect
@@ -217,7 +222,7 @@ public interface CustomEffectType {
     ArrayList<Component> lingeringPotionLore(CustomEffectProperties properties);
 
     /**
-     * get the lore of the lingering potion item
+     * get the display name of the lingering potion item
      * used when create the potion item by CustomPotionManager#getLingeringPotion(...)
      *
      * @param properties the properties of the potion effect
@@ -298,4 +303,38 @@ public interface CustomEffectType {
         return DEFAULT_AREA_EFFECT_CLOUD_REAPPLICATION_DELAY;
     }
 
+    /**
+     * get the lore of the tipped arrow item
+     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     *
+     * @param properties the properties of the potion effect
+     * @return the lore
+     */
+    @Nullable ArrayList<? extends Component> tippedArrowLore(CustomEffectProperties properties);
+
+    /**
+     * get the display name of the tipped arrow item
+     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     *
+     * @param properties the properties of the potion effect
+     * @return the display name
+     */
+    @Nullable Component tippedArrowDisplayName(CustomEffectProperties properties);
+
+    /**
+     * get the color of the tipped arrow item
+     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     *
+     * @param properties the potion effect properties
+     * @return the color
+     */
+    @Nullable Color tippedArrowColor(CustomEffectProperties properties);
+
+    /**
+     * get all the tipped arrow crafting recipes that need to register.<br>
+     * those recipes will be automatically registered when you register this potion effect type.
+     *
+     * @return the tipped arrow crafting recipes
+     */
+    @Nullable ArrayList<CraftingRecipe> tippedArrowRecipe();
 }

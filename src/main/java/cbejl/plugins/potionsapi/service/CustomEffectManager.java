@@ -9,8 +9,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -64,6 +66,15 @@ public class CustomEffectManager {
             for (PotionMix potionMix : potionMixes) {
                 potionBrewer.removePotionMix(potionMix.getKey());
                 potionBrewer.addPotionMix(potionMix);
+            }
+        }
+
+        //register tipped arrow recipes
+        ArrayList<CraftingRecipe> arrowRecipes = customPotionEffectType.tippedArrowRecipe();
+        if (arrowRecipes != null) {
+            for (CraftingRecipe recipe : arrowRecipes) {
+                CbeJlPotionsAPI.getInstance().getServer().removeRecipe(recipe.getKey());
+                CbeJlPotionsAPI.getInstance().getServer().addRecipe(recipe);
             }
         }
     }
@@ -269,6 +280,38 @@ public class CustomEffectManager {
                     meta.lore(potionEffectType.lingeringPotionLore(property));
                     meta.setMaxStackSize(1);
                 }
+                break;
+            }
+        }
+        pdc.set(EFFECT_TYPE, PersistentDataType.STRING, customPotionEffectType.toString());
+        pdc.set(EFFECT_DURATION, PersistentDataType.INTEGER, property.getDuration());
+        pdc.set(EFFECT_CHECK_INTERVAL, PersistentDataType.INTEGER, property.getCheckInterval());
+        pdc.set(EFFECT_AMPLIFIER, PersistentDataType.INTEGER, property.getAmplifier());
+        pdc.set(EFFECT_DELAY, PersistentDataType.INTEGER, property.getDelay());
+        result.setItemMeta(meta);
+        return result;
+    }
+
+    /**
+     * create a custom tipped arrow item
+     *
+     * @param customPotionEffectType the custom potion effect type
+     * @param property               the potion effect property
+     * @return the custom tipped arrow item
+     */
+    public static ItemStack getTippedArrow(NamespacedKey customPotionEffectType, CustomEffectProperties property) {
+        ItemStack result = new ItemStack(Material.TIPPED_ARROW);
+        ItemMeta meta = result.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        //set the name, lore, color, enchant glow.
+        for (CustomEffectType potionEffectType : CUSTOM_EFFECT_TYPES) {
+            if (potionEffectType.getKey().equals(customPotionEffectType)) {
+                ((PotionMeta) meta).setColor(potionEffectType.tippedArrowColor(property));
+                meta.displayName(potionEffectType.tippedArrowDisplayName(property));
+                meta.lore(potionEffectType.tippedArrowLore(property));
                 break;
             }
         }
