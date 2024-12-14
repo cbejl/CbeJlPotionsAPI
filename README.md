@@ -16,9 +16,9 @@ Download [release](https://github.com/cbejl/CbeJlPotionsAPI/releases) and add lo
 <dependency>
     <groupId>cbejl.plugins</groupId>
     <artifactId>CbeJlPotionsAPI</artifactId>
-    <version>1.1</version> <!-- Change version on what you need -->
+    <version>1.2</version> <!-- Change version on what you need -->
     <scope>system</scope>
-    <systemPath>${project.basedir}/src/main/resources/CbeJlPotionsAPI-1.1.jar</systemPath> <!-- Change path on what you need -->
+    <systemPath>${project.basedir}/src/main/resources/CbeJlPotionsAPI-1.2.jar</systemPath> <!-- Change path on what you need -->
 </dependency>
 ```
 
