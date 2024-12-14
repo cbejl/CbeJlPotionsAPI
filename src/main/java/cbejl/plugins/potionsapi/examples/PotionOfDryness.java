@@ -13,8 +13,10 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
-import org.checkerframework.checker.units.qual.A;
+import org.bukkit.inventory.CraftingRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -172,7 +174,7 @@ public class PotionOfDryness implements CustomEffectType {
         return potionColor(properties);
     }
 
-    //create crafting recipes for tipped arrow (return null if you dont need tipped arrows)
+    //create crafting recipes for tipped arrow (return null if you don't need tipped arrows)
     @Override
     public @Nullable ArrayList<CraftingRecipe> tippedArrowRecipe() {
         ItemStack arrow = CustomEffectManager.getTippedArrow(DRYNESS_KEY,

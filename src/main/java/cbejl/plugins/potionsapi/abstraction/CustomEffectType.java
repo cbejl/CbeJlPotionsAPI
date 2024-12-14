@@ -162,7 +162,7 @@ public interface CustomEffectType {
 
     /**
      * get the display name of the potion item
-     * used when create the potion item by CustomPotionManager#getPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the display name
@@ -171,7 +171,7 @@ public interface CustomEffectType {
 
     /**
      * get the lore of the potion item
-     * used when create the potion item by CustomPotionManager#getPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the lore
@@ -180,6 +180,7 @@ public interface CustomEffectType {
 
     /**
      * get the color of the potion item
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the potion effect properties
      * @return the color
@@ -188,7 +189,7 @@ public interface CustomEffectType {
 
     /**
      * get the lore of the splash potion item
-     * used when create the potion item by CustomPotionManager#getSplashPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getSplashPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the lore
@@ -197,7 +198,7 @@ public interface CustomEffectType {
 
     /**
      * get the display name of the splash potion item
-     * used when create the potion item by CustomPotionManager#getSplashPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getSplashPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the display name
@@ -206,6 +207,7 @@ public interface CustomEffectType {
 
     /**
      * get the color of the splash potion item
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getSplashPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the potion effect properties
      * @return the color
@@ -214,7 +216,7 @@ public interface CustomEffectType {
 
     /**
      * get the lore of the lingering potion item
-     * used when create the potion item by CustomPotionManager#getLingeringPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getLingeringPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the lore
@@ -223,7 +225,7 @@ public interface CustomEffectType {
 
     /**
      * get the display name of the lingering potion item
-     * used when create the potion item by CustomPotionManager#getLingeringPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getLingeringPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the display name
@@ -232,7 +234,7 @@ public interface CustomEffectType {
 
     /**
      * get the color of the lingering potion item
-     * used when create the potion item by CustomPotionManager#getLingeringPotion(...)
+     * <br/>used when create the potion item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getLingeringPotion(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the potion effect properties
      * @return the color
@@ -241,7 +243,6 @@ public interface CustomEffectType {
 
     /**
      * the initial duration which this cloud will exist for (in ticks).
-     * used when
      *
      * @param properties the potion effect properties
      * @return the duration ticks
@@ -252,7 +253,7 @@ public interface CustomEffectType {
 
     /**
      * the amount that the duration of this cloud will INCREASE by when it applies an effect to an entity.
-     * make this value negative to make the duration decrease.
+     * <br/>make this value negative to make the duration decrease.
      *
      * @param properties the potion effect properties
      * @return the duration ticks on use.
@@ -273,7 +274,7 @@ public interface CustomEffectType {
 
     /**
      * the amount that the radius of this cloud will INCREASE by when it applies an effect to an entity.
-     * make this value negative to make the radius decrease.
+     * <br/>make this value negative to make the radius decrease.
      *
      * @param properties the potion effect properties
      * @return the radius on use.
@@ -284,7 +285,7 @@ public interface CustomEffectType {
 
     /**
      * the amount that the radius of this cloud will INCREASE by each tick.
-     * make this value negative to make it decrease.
+     * <br/>make this value negative to make it decrease.
      *
      * @param properties the potion effect properties
      * @return the radius on tick.
@@ -305,7 +306,7 @@ public interface CustomEffectType {
 
     /**
      * get the lore of the tipped arrow item
-     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     * <br/>used when create the tipped arrow item by  {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getTippedArrow(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the lore
@@ -314,7 +315,7 @@ public interface CustomEffectType {
 
     /**
      * get the display name of the tipped arrow item
-     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     * <br/>used when create the tipped arrow item by  {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getTippedArrow(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the properties of the potion effect
      * @return the display name
@@ -323,7 +324,7 @@ public interface CustomEffectType {
 
     /**
      * get the color of the tipped arrow item
-     * used when create the tipped arrow item by CustomPotionManager#getTippedArrow(...)
+     * <br/>used when create the tipped arrow item by {@link cbejl.plugins.potionsapi.service.CustomEffectManager#getTippedArrow(NamespacedKey, CustomEffectProperties)}
      *
      * @param properties the potion effect properties
      * @return the color
@@ -332,7 +333,7 @@ public interface CustomEffectType {
 
     /**
      * get all the tipped arrow crafting recipes that need to register.<br>
-     * those recipes will be automatically registered when you register this potion effect type.
+     * <br/>those recipes will be automatically registered when you register this potion effect type.
      *
      * @return the tipped arrow crafting recipes
      */

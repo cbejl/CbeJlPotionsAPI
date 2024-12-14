@@ -1,4 +1,4 @@
-CbeJlPotionsAPI
+<img src="/src/main/resources/icon.png" width=32px/> CbeJlPotionsAPI
 ---
 
 Create you own potion effect!
@@ -6,7 +6,6 @@ Create you own potion effect!
 
 Supports drinkable, splash and lingering potions. *<sub>And tipped arrows!</sub>*
 
----
 ## How to use?
 
 #### Step 1.
@@ -33,7 +32,7 @@ Create class which ``CustomEffectType.class`` implementation and implement all a
 
 After create your own effect type, simply register the type using the ``CustomEffectManager.registerPotionEffectType(CustomPotionEffectType type)``
 
-If you want to get a potion item with your custom effect, you can call the ``CustomEffectManager.getPotion(org.bukkit.NamespacedKey, CustomEffectProperties properties)`` method.
+If you want to get a potion item with your custom effect, you can call the ``CustomEffectManager.getPotion(org.bukkit.NamespacedKey, CustomEffectProperties properties)`` or ``.getSplashPotion(...)`` or ``.getLingeringPotion(...)``method.
 
 If you want to get a tipped arrow with your custom effect, you can call the ``CustomEffectManager.getTippedArrow(org.bukkit.NamespacedKey, CustomEffectProperties properties)`` method.
 

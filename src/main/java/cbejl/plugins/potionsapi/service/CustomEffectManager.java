@@ -12,7 +12,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -79,18 +78,40 @@ public class CustomEffectManager {
         }
     }
 
+    /**
+     * Get map of active effects
+     *
+     * @return Map of UUID's and Set of CustomEffects, belonging to this UUID's
+     */
     public static Map<UUID, Set<CustomEffect>> getActiveEffects() {
         return ACTIVE_EFFECTS;
     }
 
+    /**
+     * Get List of registered customEffectType's
+     *
+     * @return List of registered customEffectType's
+     */
     public static List<CustomEffectType> getCustomEffectTypes() {
         return CUSTOM_EFFECT_TYPES;
     }
 
+    /**
+     * Get Map of paused effects.
+     * <br/>That map contains all quit entites whose effect is not over at the time of quit
+     *
+     * @return Map of UUID's and Set of CustomEffects, belonging to this UUID's
+     */
     public static Map<UUID, Set<CustomEffect>> getPausedEffects() {
         return PAUSED_EFFECTS;
     }
 
+    /**
+     * Pause all effects on entity.
+     * <br/>Automatically triggered for players on {@link org.bukkit.event.player.PlayerQuitEvent} event.
+     *
+     * @param uuid UUID of entity
+     */
     public static void pauseEffects(UUID uuid) {
         if (!ACTIVE_EFFECTS.containsKey(uuid) || ACTIVE_EFFECTS.get(uuid).isEmpty()) return;
 
@@ -103,10 +124,15 @@ public class CustomEffectManager {
             CustomEffect effect = iterator.next();
             PAUSED_EFFECTS.get(uuid).add(CustomEffect.clone(effect));
             effect.cancel();
-            iterator.remove();
         }
     }
 
+    /**
+     * Unpause all paused effects on entity.
+     * <br/>Automatically triggered for players on {@link org.bukkit.event.player.PlayerJoinEvent} event.
+     *
+     * @param uuid UUID of entity
+     */
     public static void resumeEffects(UUID uuid) {
         if (!PAUSED_EFFECTS.containsKey(uuid) || PAUSED_EFFECTS.get(uuid).isEmpty()) return;
 
@@ -120,6 +146,14 @@ public class CustomEffectManager {
         }
     }
 
+    /**
+     * Add effect to active effects list.
+     * <br/>Not for apply effect! Just add to list!
+     * <br/>To apply effect on entity use {@link CustomEffect#apply(LivingEntity)} method!
+     * On apply effect will be automatically added to the active effects list!
+     *
+     * @param effect    effect to add
+     */
     public static void addEffectToActive(CustomEffect effect) {
         UUID uuid = effect.getEntity().getUniqueId();
         if (!ACTIVE_EFFECTS.containsKey(uuid) || ACTIVE_EFFECTS.get(uuid).isEmpty()) {
@@ -129,6 +163,14 @@ public class CustomEffectManager {
         ACTIVE_EFFECTS.get(uuid).add(effect);
     }
 
+    /**
+     * Remove effect from active effects list.
+     * <br/>Not for stop effect! Just remove from list!
+     * <br/>To stop effect for entity use {@link CustomEffectManager#stopEffect(LivingEntity, CustomEffectType)}
+     * or {@link CustomEffect#cancel()} method's! On stop effect will be automatically removed from the active effects list!
+     *
+     * @param effect    effect to remove
+     */
     public static void removeEffectFromActive(CustomEffect effect) {
         UUID uuid = effect.getEntity().getUniqueId();
         if (!ACTIVE_EFFECTS.containsKey(uuid) || ACTIVE_EFFECTS.get(uuid).isEmpty()) return;
@@ -136,6 +178,12 @@ public class CustomEffectManager {
         ACTIVE_EFFECTS.get(uuid).removeIf(x -> x.getType().getKey().equals(effect.getType().getKey()));
     }
 
+    /**
+     * Removes the effect from entity by type
+     *
+     * @param entity    entity to remove the effect from
+     * @param type      CustomEffectType that needs to be removed
+     */
     public static void stopEffect(LivingEntity entity, CustomEffectType type) {
         UUID uuid = entity.getUniqueId();
         if (!ACTIVE_EFFECTS.containsKey(uuid) || ACTIVE_EFFECTS.get(uuid).isEmpty()) return;
@@ -151,6 +199,11 @@ public class CustomEffectManager {
         }
     }
 
+    /**
+     * Remove all the effects that can be removed with milk from entity
+     *
+     * @param entity    entity to remove the effects from
+     */
     public static void stopEffectByMilk(LivingEntity entity) {
         UUID uuid = entity.getUniqueId();
         if (!ACTIVE_EFFECTS.containsKey(uuid) || ACTIVE_EFFECTS.get(uuid).isEmpty()) return;
@@ -236,6 +289,12 @@ public class CustomEffectManager {
         return new CustomEffect(customPotionEffectType, item.getType(), null, duration, amplifier, checkInterval, delay);
     }
 
+    /**
+     * Get registered {@link CustomEffectType} by {@link org.bukkit.NamespacedKey}
+     *
+     * @param key   key of {@link CustomEffectType}
+     * @return      registered {@link CustomEffectType}
+     */
     public static CustomEffectType getCustomEffectType(NamespacedKey key) {
         for (CustomEffectType potionEffectType : CUSTOM_EFFECT_TYPES) {
             if (potionEffectType.getKey().equals(key)) {
@@ -248,7 +307,9 @@ public class CustomEffectManager {
     /**
      * create a custom potion item use given material
      *
-     * @param material               the material of the potion
+     * @param material               the material of the potion ({@link org.bukkit.Material#POTION}, 
+     *                               {@link org.bukkit.Material#SPLASH_POTION}, {@link org.bukkit.Material#LINGERING_POTION} 
+     *                               or {@link org.bukkit.Material#TIPPED_ARROW})
      * @param customPotionEffectType the custom potion effect type
      * @param property               the potion property
      * @return the custom potion item
@@ -256,62 +317,37 @@ public class CustomEffectManager {
     public static ItemStack getPotion(Material material, NamespacedKey customPotionEffectType, CustomEffectProperties property) {
         ItemStack result = new ItemStack(material);
         ItemMeta meta = result.getItemMeta();
-        meta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        //set the name, lore, color, enchant glow.
         for (CustomEffectType potionEffectType : CUSTOM_EFFECT_TYPES) {
             if (potionEffectType.getKey().equals(customPotionEffectType)) {
-                if (material.equals(Material.POTION)) {
-                    ((PotionMeta) meta).setColor(potionEffectType.potionColor(property));
-                    meta.displayName(potionEffectType.potionDisplayName(property));
-                    meta.lore(potionEffectType.potionLore(property));
-                    meta.setMaxStackSize(16);
-                } else if (material.equals(Material.SPLASH_POTION)) {
-                    ((PotionMeta) meta).setColor(potionEffectType.splashPotionColor(property));
-                    meta.displayName(potionEffectType.splashPotionDisplayName(property));
-                    meta.lore(potionEffectType.splashPotionLore(property));
-                    meta.setMaxStackSize(8);
-                } else if (material.equals(Material.LINGERING_POTION)) {
-                    ((PotionMeta) meta).setColor(potionEffectType.lingeringPotionColor(property));
-                    ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0, false, false, false), true);
-                    meta.displayName(potionEffectType.lingeringPotionDisplayName(property));
-                    meta.lore(potionEffectType.lingeringPotionLore(property));
-                    meta.setMaxStackSize(1);
+                switch (material) {
+                    case Material.POTION -> {
+                        ((PotionMeta) meta).setColor(potionEffectType.potionColor(property));
+                        meta.displayName(potionEffectType.potionDisplayName(property));
+                        meta.lore(potionEffectType.potionLore(property));
+                        meta.setMaxStackSize(16);
+                    }
+                    case SPLASH_POTION -> {
+                        ((PotionMeta) meta).setColor(potionEffectType.splashPotionColor(property));
+                        meta.displayName(potionEffectType.splashPotionDisplayName(property));
+                        meta.lore(potionEffectType.splashPotionLore(property));
+                        meta.setMaxStackSize(8);
+                    }
+                    case Material.LINGERING_POTION -> {
+                        ((PotionMeta) meta).setColor(potionEffectType.lingeringPotionColor(property));
+                        ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0, false, false, false), true);
+                        meta.displayName(potionEffectType.lingeringPotionDisplayName(property));
+                        meta.lore(potionEffectType.lingeringPotionLore(property));
+                        meta.setMaxStackSize(1);
+                    }
+                    case TIPPED_ARROW -> {
+                        ((PotionMeta) meta).setColor(potionEffectType.tippedArrowColor(property));
+                        meta.displayName(potionEffectType.tippedArrowDisplayName(property));
+                        meta.lore(potionEffectType.tippedArrowLore(property));
+                        meta.setMaxStackSize(64);
+                    }
                 }
-                break;
-            }
-        }
-        pdc.set(EFFECT_TYPE, PersistentDataType.STRING, customPotionEffectType.toString());
-        pdc.set(EFFECT_DURATION, PersistentDataType.INTEGER, property.getDuration());
-        pdc.set(EFFECT_CHECK_INTERVAL, PersistentDataType.INTEGER, property.getCheckInterval());
-        pdc.set(EFFECT_AMPLIFIER, PersistentDataType.INTEGER, property.getAmplifier());
-        pdc.set(EFFECT_DELAY, PersistentDataType.INTEGER, property.getDelay());
-        result.setItemMeta(meta);
-        return result;
-    }
-
-    /**
-     * create a custom tipped arrow item
-     *
-     * @param customPotionEffectType the custom potion effect type
-     * @param property               the potion effect property
-     * @return the custom tipped arrow item
-     */
-    public static ItemStack getTippedArrow(NamespacedKey customPotionEffectType, CustomEffectProperties property) {
-        ItemStack result = new ItemStack(Material.TIPPED_ARROW);
-        ItemMeta meta = result.getItemMeta();
-        meta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        //set the name, lore, color, enchant glow.
-        for (CustomEffectType potionEffectType : CUSTOM_EFFECT_TYPES) {
-            if (potionEffectType.getKey().equals(customPotionEffectType)) {
-                ((PotionMeta) meta).setColor(potionEffectType.tippedArrowColor(property));
-                meta.displayName(potionEffectType.tippedArrowDisplayName(property));
-                meta.lore(potionEffectType.tippedArrowLore(property));
                 break;
             }
         }
@@ -329,16 +365,16 @@ public class CustomEffectManager {
      * YOU CAN NOT USE THIS METHOD TO CREATE A POTION WITH CUSTOM EFFECT.
      *
      * @param material   the material of the potion.
-     *                   you should only use Material.POTION or Material.SPLASH_POTION or Material.LINGERING_POTION.
+     *                   you should only use {@link Material#POTION}, {@link Material#SPLASH_POTION},
+     *                   {@link Material#LINGERING_POTION} or {@link Material#TIPPED_ARROW}.
      * @param potionType the potion type of the potion.
-     *                   PotionType.WATER presents the water bottle.
+     *                   {@link PotionType#WATER} presents the water bottle.
      * @return the custom potion item
      */
     public static ItemStack getPotion(Material material, PotionType potionType) {
         ItemStack bottle = new ItemStack(material, 1);
-        ItemMeta meta = bottle.getItemMeta();
-        PotionMeta potionMeta = (PotionMeta) meta;
-        potionMeta.setBasePotionType(potionType);
+        PotionMeta meta = (PotionMeta) bottle.getItemMeta();
+        meta.setBasePotionType(potionType);
         bottle.setItemMeta(meta);
         return bottle;
     }
@@ -374,5 +410,16 @@ public class CustomEffectManager {
      */
     public static ItemStack getLingeringPotion(NamespacedKey customPotionEffectType, CustomEffectProperties property) {
         return getPotion(Material.LINGERING_POTION, customPotionEffectType, property);
+    }
+
+    /**
+     * create a custom tipped arrow item
+     *
+     * @param customPotionEffectType the custom potion effect type
+     * @param property               the custom potion effect property
+     * @return the custom tipped arrow item
+     */
+    public static ItemStack getTippedArrow(NamespacedKey customPotionEffectType, CustomEffectProperties property) {
+        return getPotion(Material.TIPPED_ARROW, customPotionEffectType, property);
     }
 }
